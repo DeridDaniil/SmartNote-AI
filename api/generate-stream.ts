@@ -14,6 +14,12 @@ import {
   parseOptions,
 } from "./_prompt.js";
 
+// This handler is written in the Web Fetch style (Request/Response, streaming
+// via ReadableStream, request.json(), Headers.get()). On Vercel that requires
+// the Edge runtime — otherwise it runs on Node and `request.headers.get` etc.
+// are not available. Edge supports `process.env` for env vars.
+export const config = { runtime: "edge" };
+
 type AIMode =
   | "summary"
   | "rewrite"

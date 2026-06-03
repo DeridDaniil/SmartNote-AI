@@ -13,6 +13,11 @@ import {
   parseOptions,
 } from "./_prompt.js";
 
+// Web Fetch style handler (Request/Response, request.json(), Headers.get()) —
+// runs on Vercel's Edge runtime. Without this, Vercel uses the Node runtime
+// where the Web Request API is unavailable. Edge supports `process.env`.
+export const config = { runtime: "edge" };
+
 type AIMode =
   | "summary"
   | "rewrite"

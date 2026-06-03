@@ -28,8 +28,21 @@ export const json = (data: unknown, status: number): Response =>
     headers: { "content-type": "application/json", ...SECURITY_HEADERS },
   });
 
+// Read a header that works whether `request.headers` is a Web `Headers`
+// instance (Edge / Web runtime) or a plain object (Node / Vercel runtime).
+// This keeps the helpers from throwing `headers.get is not a function`.
+const getHeader = (request: Request, name: string): string | undefined => {
+  const headers = request.headers as unknown;
+  if (headers && typeof (headers as Headers).get === "function") {
+    return (headers as Headers).get(name) ?? undefined;
+  }
+  const bag = headers as Record<string, string | string[] | undefined>;
+  const value = bag?.[name.toLowerCase()] ?? bag?.[name];
+  return Array.isArray(value) ? value[0] : value;
+};
+
 export const checkBodySize = (request: Request): Response | null => {
-  const lenHeader = request.headers.get("content-length");
+  const lenHeader = getHeader(request, "content-length");
   if (lenHeader) {
     const len = Number.parseInt(lenHeader, 10);
     if (Number.isFinite(len) && len > MAX_BODY_BYTES) {
@@ -40,14 +53,14 @@ export const checkBodySize = (request: Request): Response | null => {
 };
 
 export const getClientIp = (request: Request): string => {
-  const xff = request.headers.get("x-forwarded-for");
+  const xff = getHeader(request, "x-forwarded-for");
   if (xff) {
     const first = xff.split(",")[0]?.trim();
     if (first) return first;
   }
   return (
-    request.headers.get("x-real-ip") ??
-    request.headers.get("cf-connecting-ip") ??
+    getHeader(request, "x-real-ip") ??
+    getHeader(request, "cf-connecting-ip") ??
     "unknown"
   );
 };
