@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-canvas: 248 248 246;
+    --color-surface: 255 255 255;
+    --color-border: 229 229 226;
+    --color-muted: 244 244 241;
+    --color-text: 24 24 27;
+    --color-subtle: 113 113 122;
+    --color-accent: 24 24 27;
+    --color-accent-soft: 234 234 230;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-text font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    background: rgb(var(--color-text) / 0.9);
+    color: rgb(var(--color-surface));
+  }
+}
+
+@layer components {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-border)) transparent;
+  }
+}
+
+@layer utilities {
+  /* Lightweight entrance/transition utilities. Always used with the Tailwind
+     `motion-safe:` prefix so reduced-motion users get no animation. */
+  .animate-fade-up {
+    animation: sn-fade-up 0.4s ease-out both;
+  }
+  .animate-fade {
+    animation: sn-fade 0.25s ease-out both;
+  }
+  .animate-slide-in-left {
+    animation: sn-slide-in-left 0.25s ease-out both;
+  }
+}
+
+@keyframes sn-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sn-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sn-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Belt-and-suspenders: kill animations entirely under reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
