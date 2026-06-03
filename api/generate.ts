@@ -6,8 +6,12 @@ import {
   fetchWithTimeout,
   isValidMode,
   json,
-} from "./_security";
-import { LANGUAGE_DIRECTIVE, buildDirectives, parseOptions } from "./_prompt";
+} from "./_security.js";
+import {
+  LANGUAGE_DIRECTIVE,
+  buildDirectives,
+  parseOptions,
+} from "./_prompt.js";
 
 type AIMode =
   | "summary"
